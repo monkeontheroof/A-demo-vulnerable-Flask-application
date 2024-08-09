@@ -1,6 +1,12 @@
 {% extends "base.html" %} {% block title %}Changed{% endblock %} 
 {% block content%}
     <h1 align="center">Notes</h1>
+    {# {% autoescape false %} #}
+      {% if user.is_authenticated %}
+      <p>Welcome {{ greeting }}!</p>
+      {% endif %}
+    {# {% endautoescape %} #}
+    
     <ul class="list-group list-group-flush" id="notes">
       
       <li class="list-group-item">

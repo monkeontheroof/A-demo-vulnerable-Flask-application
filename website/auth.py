@@ -1,14 +1,31 @@
-from flask import Blueprint, render_template, render_template_string, request, flash
+from flask import Blueprint, render_template, render_template_string, request, flash, redirect, url_for
+from website.services.user_service import UserService
+from flask_login import login_user, login_required, logout_user, current_user
+from flask_bcrypt import *
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = UserService.authenticate(email, password)
+        if user:
+            flash('Logged in successfully!', category='success')
+            login_user(user, remember=True)
+            return redirect(url_for('views.home'))
+        else:
+            flash('Incorrect email or password.', category='error')
+    
+    return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return render_template("login.html")
+    logout_user()
+    return redirect(url_for('auth.login'))
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
@@ -30,7 +47,12 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            flash('Account created!', category='success')
-
-    return render_template("signup.html")
+            try:
+                UserService.add_user(email, password1, firstName)
+                flash('Account created!', category='success')
+                return redirect(url_for('auth.login'))
+            except ValueError as e:
+                flash(str(e), category='error')
+            
+    return render_template("signup.html", user=current_user)
 
