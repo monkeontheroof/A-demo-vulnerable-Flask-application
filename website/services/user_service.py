@@ -1,6 +1,7 @@
 from website.models import User
 from website import mysql as db
 from website import bcrypt
+from sqlalchemy import text
 
 class UserService:
     
@@ -21,6 +22,8 @@ class UserService:
         new_user = User(email=email, password=bcrypt.generate_password_hash(password).decode('utf-8'), first_name=first_name)
         db.session.add(new_user)
         db.session.commit()
+        # db.session.execute(text()) 
+        return new_user
         
     @staticmethod
     def authenticate(email, password):

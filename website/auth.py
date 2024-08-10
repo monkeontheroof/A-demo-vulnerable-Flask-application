@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, render_template_string, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from website.services.user_service import UserService
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_bcrypt import *
@@ -48,9 +48,10 @@ def sign_up():
             flash('Password must be at least 7 characters.', category='error')
         else:
             try:
-                UserService.add_user(email, password1, firstName)
+                user = UserService.add_user(email, password1, firstName)
                 flash('Account created!', category='success')
-                return redirect(url_for('auth.login'))
+                login_user(user)
+                return redirect(url_for('views.home'))
             except ValueError as e:
                 flash(str(e), category='error')
             
