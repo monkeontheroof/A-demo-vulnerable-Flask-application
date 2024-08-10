@@ -3,7 +3,7 @@
     <h1 align="center">Notes</h1>
     {# {% autoescape false %} #}
       {% if user.is_authenticated %}
-      <p>Welcome {{ greeting }}!</p>
+      <p>Welcome {{ user.first_name|safe }}!</p>
       {% endif %}
     {# {% endautoescape %} #}
     
