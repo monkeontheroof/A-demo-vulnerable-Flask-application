@@ -4,3 +4,4 @@ flask_login
 flask-sqlalchemy
 pymysql
 flask-bcrypt
+cryptography

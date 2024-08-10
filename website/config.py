@@ -9,3 +9,4 @@ class Config:
     
     SECRET_KEY = 'Admin@123'
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

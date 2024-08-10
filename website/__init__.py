@@ -13,7 +13,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     
-    app.config.from_object(Config)
+    app.config.from_object(Config) # from config.py
 
     app.config['SQLALCHEMY_DATABASE_URI'] += Config.MYSQL_DATABASE + '?charset=utf8mb4'
     
@@ -30,19 +30,23 @@ def create_app(test_config=None):
     
     create_database()
     
+    # configure the login manager
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
+    login_manager.session_protection = None
     login_manager.init_app(app)
     
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
 
+    # create database tables
     with app.app_context():
         mysql.create_all()
 
     return app
 
+# initialize the DBMS
 def create_database():
     """Create the database if it does not exist."""
     connection = pymysql.connect(
