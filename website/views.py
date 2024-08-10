@@ -40,9 +40,9 @@ def note(note_id):
             return jsonify({"success": False, "error": "No data found"}), 404
         
         required_fields = ['date', 'data']
-            for field in required_fields:
-                if not data.get(field):
-                    raise ValueError(f"{field.capitalize()} field is required")
+        for field in required_fields:
+            if not data.get(field):
+                raise ValueError(f"{field.capitalize()} field is required")
     
     return render_template("note.html", user=current_user, note=note)
 
