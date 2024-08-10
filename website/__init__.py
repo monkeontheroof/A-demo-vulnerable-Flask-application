@@ -1,10 +1,11 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
 from website.config import Config
 import pymysql
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+from .errors import InvalidInput
 
 mysql = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -40,8 +41,15 @@ def create_app(test_config=None):
     def load_user(id):
         return User.query.get(int(id))
 
+    @app.errorhandler(InvalidInput)
+    def handle_invalid_input(error):
+        response = jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
+    
     # create database tables
     with app.app_context():
+        # mysql.drop_all()
         mysql.create_all()
 
     return app

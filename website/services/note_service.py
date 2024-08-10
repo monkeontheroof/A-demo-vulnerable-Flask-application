@@ -1,5 +1,6 @@
 from website.models import Note
 from website import mysql as db
+from website.errors import InvalidInput
 
 class NoteService:
 
@@ -15,12 +16,16 @@ class NoteService:
 
     @staticmethod
     def edit_note(note_id, data):
-        if data:
-            note = Note.query.get_or_404(note_id)
-            note.data = data['data']
-            note.date = data['date']
-            db.session.commit()
-            return note
+        if not data:
+            raise InvalidInput("No data provided.", 400)
+        elif not data.get('data') or not data.get('date'):
+            raise InvalidInput("Missing required fields", 400)
+        
+        note = Note.query.get_or_404(note_id)
+        note.data = data['data']
+        note.date = data['date']
+        db.session.commit()
+        return note
 
     @staticmethod
     def delete_note(note_id, user_id):
