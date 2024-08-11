@@ -1,50 +1,8 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} 
+{% extends "base.html" %} {% block title %}Home{% endblock title %} 
 {% block content%}
-    <h1 align="center">Notes</h1>
-    {# {% autoescape false %} #}
-      {% if user.is_authenticated %}
-      <p>{{ message }}</p>
-      {% endif %}
-    {# {% endautoescape %} #}
+  <p>Welcome back!!</p>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Content</th>
-          <th scope="col">Date</th>
-          <th scope="col">User ID</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for note in user.notes %}
-        <tr id="note-{{ note.id }}">
-          <th scope="row">{{ loop.index }}</th>
-          <td>{{ note.data }}</td>
-          <td>{{ note.date }}</td>
-          <td>{{ note.user_id }}</td>
-          <td>
-            <!-- Edit Button with Icon -->
-            <button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='/note/' + {{ note.id }}">
-              <i class="fas fa-edit"></i>
-            </button>
-            
-            <!-- Delete Button with Icon -->
-            <button type="button" class="btn btn-danger btn-sm" onClick="deleteNote({{ note.id }})">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>    
-    
-    <form method="POST">
-      <textarea name="note" id="note" class="form-control"></textarea>
-      <br />
-      <div align="center">
-        <button type="submit" class="btn btn-success">Add Note</button>
-      </div>
-    </form>
-    {% endblock %}
+{% if user.is_authenticated and 'admin@gmail.com' in user.email %}
+FLAG{FAKE_FLAG_FOR_TESTING}
+{% endif %}
+{% endblock content%}

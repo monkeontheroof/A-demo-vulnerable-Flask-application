@@ -1,6 +1,7 @@
 from website.models import Note
 from website import mysql as db
 from website.errors import InvalidInput
+from sqlalchemy import text
 
 class NoteService:
 
@@ -12,7 +13,9 @@ class NoteService:
 
     @staticmethod
     def get_note_by_id(note_id):
-        return Note.query.get_or_404(note_id)
+        query = text(f'SELECT * FROM note WHERE id = {note_id}')
+        note = db.session.execute(query).fetchone()
+        return note
 
     @staticmethod
     def edit_note(note_id, data):

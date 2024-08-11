@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block title %}Edit Note{% endblock %} 
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Note</h2>
+    <form id="editNoteForm">
+      <div class="mb-3">
+        <label for="data" class="form-label"><b>Date:</b></label>
+        <p>{{ note.date | safe }}</p>
+        <input type="hidden" class="form-control" id="date" name="date" value="{{ note.date }}" readonly>
+      </div>
+      <div class="mb-3">
+        <label for="noteData" class="form-label"><b>Note content:</b></label>
+        <textarea class="form-control" id="data" name="data" rows="5" required>{{ note.data }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="userId" class="form-label">User ID</label>
+        <input type="number" class="form-control" id="userId" name="userId" value="{{ note.user_id }}" readonly/>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i> Save Changes</button>
+      <a href="/note" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+    </form>
+</div>
+
+<script>
+    function submitForm() {      
+      // Collect the form data
+      const formData = {
+        date: document.getElementById('date').value,
+        data: document.getElementById('data').value
+      };
+
+      // Send the data as JSON to the server
+      fetch('/note/{{ note.id }}', {
+        method: 'POST', // Or PUT, based on your API
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then((_res) => {
+        window.location.reload();
+    });
+    };
+</script>
+{% endblock %}

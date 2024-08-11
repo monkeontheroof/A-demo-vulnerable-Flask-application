@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from flask import Flask, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -21,8 +22,8 @@ def create_app(test_config=None):
     mysql.init_app(app)
     bcrypt.init_app(app)
     
-    from .views import views
-    from .auth import auth
+    from .routes.views import views
+    from .routes.auth import auth
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -36,7 +37,7 @@ def create_app(test_config=None):
     login_manager.login_view = 'auth.login'
     login_manager.session_protection = None
     login_manager.init_app(app)
-    
+
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
@@ -47,14 +48,21 @@ def create_app(test_config=None):
         response.status_code = error.status_code
         return response
     
-    # create database tables
+    # create tables and insert records
     with app.app_context():
-        # mysql.drop_all()
+        mysql.drop_all()
         mysql.create_all()
 
+        admin = User(email="admin@gmail.com", password="$2a$10$YVxRbvILas.DQFjLs0A12ui0xXkQhzvg6fxXwWTAHZLkoYV.4deLq", first_name="administrator")
+        admin_note = Note(data="How did you find my note?", date=datetime.now(), user_id=1)
+
+        mysql.session.add(admin)
+        mysql.session.add(admin_note)
+        mysql.session.commit()
+    
     return app
 
-# initialize the DBMS
+# initialize the schema
 def create_database():
     """Create the database if it does not exist."""
     connection = pymysql.connect(

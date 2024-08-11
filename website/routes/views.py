@@ -6,6 +6,13 @@ from website.errors import InvalidInput
 
 views = Blueprint('views', __name__)
 
+@views.route('/')
+@login_required
+def home():
+    # message = request.args.get('message', 'Welcome back!')
+    
+    return render_template("home.html", user=current_user)
+
 @views.route('/note', methods=['GET', 'POST'])
 @login_required
 def my_note():
@@ -21,10 +28,11 @@ def my_note():
             except Exception as e:
                 raise InvalidInput('Failed')
 
-    message = f'Welcome back {current_user.first_name}'
-    return render_template("home.html", user=current_user, message=message)
+    message = Markup(f'{current_user.first_name}\'s Notes')
 
-@views.route('/note/<int:note_id>', methods=['GET', 'POST'])
+    return render_template("note.html", user=current_user, message=message)
+
+@views.route('/note/<note_id>', methods=['GET', 'POST'])
 @login_required
 def note(note_id):
     note = NoteService.get_note_by_id(note_id)
@@ -36,18 +44,10 @@ def note(note_id):
         flash('Saved successfully.', category='success')
         return jsonify({'success':True})
     
-    return render_template("note.html", user=current_user, note=note)
+    return render_template("edit_note.html", user=current_user, note=note)
 
 @views.route('/delete-note/<int:note_id>', methods=['POST'])
 def delete_note(note_id):
     NoteService.delete_note(note_id, current_user.id)
     return jsonify({})
 
-@views.route('/')
-@login_required
-def home():
-    message = request.args.get('message', 'Welcome back!')
-    return render_template_string("""
-        {% extends "base.html" %} {% block title %}Index{% endblock %}
-        {% block content %}""" + f'<p>{message}</p>' + '{% endblock %}'
-        , user=current_user)
