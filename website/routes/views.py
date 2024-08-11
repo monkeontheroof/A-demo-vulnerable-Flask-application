@@ -1,8 +1,9 @@
-from flask import Blueprint, abort, jsonify, render_template, request, render_template_string, flash
+from flask import Blueprint, abort, jsonify, redirect, render_template, request, render_template_string, flash
 from flask_login import login_required, current_user
 from markupsafe import Markup
 from website.services.note_service import NoteService
 from website.errors import InvalidInput
+from flask import url_for
 
 views = Blueprint('views', __name__)
 
@@ -38,7 +39,7 @@ def note(note_id):
     note = NoteService.get_note_by_id(note_id)
     
     if not note or note.user_id != current_user.id:
-        return abort(403)
+        return redirect(url_for('views.my_note'))
 
     if request.method == 'POST':
         data = request.get_json()

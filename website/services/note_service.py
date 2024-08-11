@@ -18,7 +18,7 @@ class NoteService:
             query = text(f'SELECT * FROM note WHERE id = {note_id}')
             note = db.session.execute(query).fetchone()
             return note
-        except Exception as e:
+        except Exception:
             return None
 
     @staticmethod

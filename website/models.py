@@ -16,5 +16,10 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(256))
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note')
+    
+class Flag(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    flag = db.Column(db.String(256), unique=True)
 
     
