@@ -22,10 +22,10 @@ def create_app(test_config=None):
     mysql.init_app(app)
     bcrypt.init_app(app)
     
-    from .routes.views import views
+    from .routes.note import note
     from .routes.auth import auth
 
-    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(note, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
     from .models import User, Note, Flag
