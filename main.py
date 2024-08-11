@@ -1,4 +1,5 @@
 from website import create_app
+from website.config import Config
 
 # website package
 app = create_app()

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request, render_template_string, flash
+from flask import Blueprint, abort, jsonify, render_template, request, render_template_string, flash
 from flask_login import login_required, current_user
 from markupsafe import Markup
 from website.services.note_service import NoteService
@@ -26,7 +26,7 @@ def my_note():
                 NoteService.add_note(data=note, user_id=current_user.id)
                 flash('Note added!', category='success')
             except Exception as e:
-                raise InvalidInput('Failed')
+                flash('Failed.', category='error')
 
     message = Markup(f'{current_user.first_name}\'s Notes')
 
@@ -36,6 +36,9 @@ def my_note():
 @login_required
 def note(note_id):
     note = NoteService.get_note_by_id(note_id)
+    
+    if not note or note.user_id != current_user.id:
+        return abort(403)
 
     if request.method == 'POST':
         data = request.get_json()
