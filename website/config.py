@@ -3,7 +3,7 @@ import os
 class Config:
     MYSQL_USER = os.getenv('DB_USER', 'root')
     MYSQL_PASSWORD = os.getenv('DB_PASSWORD', 'password123')
-    MYSQL_HOST = os.getenv('DB_HOST', 'localhost')
+    MYSQL_HOST = os.getenv('DB_HOST', 'db')
     MYSQL_PORT = os.getenv('DB_PORT', '3306')
     MYSQL_DATABASE = os.getenv('DB_NAME', 'test_db')
 
