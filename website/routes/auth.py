@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from website.errors import InvalidInput
 from website.services.user_service import UserService
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_bcrypt import *

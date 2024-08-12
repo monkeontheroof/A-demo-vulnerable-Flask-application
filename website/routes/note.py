@@ -1,7 +1,9 @@
-from flask import Blueprint, jsonify, redirect, render_template, request, render_template_string, flash
+from flask import Blueprint, jsonify, redirect, render_template, request, flash
 from flask_login import login_required, current_user
+from website.errors import InvalidInput
 from website.services.note_service import NoteService
 from flask import url_for
+
 
 note = Blueprint('notes', __name__)
 
@@ -52,4 +54,24 @@ def notes(note_id):
 def delete_note(note_id):
     NoteService.delete_note(note_id, current_user.id)
     return jsonify({})
+
+@note.route('/save-note/<int:note_id>', methods=['POST'])
+def save_note(note_id):
+    file_name = NoteService.export_note(note_id)    
+    
+    if not file_name:
+        raise InvalidInput('Failed to save note.', 500)
+    
+    file_url = request.host_url + 'static/uploads/' + file_name
+    
+    return redirect(url_for('notes.convert_to_pdf', url=file_url))
+
+@note.route('/pdf')
+def convert_to_pdf():
+    url = request.args.get('url')
+    
+    return NoteService.to_pdf(url)
+    
+
+
 

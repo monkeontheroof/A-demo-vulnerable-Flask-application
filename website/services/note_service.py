@@ -1,8 +1,15 @@
-from flask import flash
+import urllib.error
 from website.models import Note
 from website import mysql as db
 from website.errors import InvalidInput
 from sqlalchemy import text
+import os
+import io
+from xhtml2pdf import pisa
+from urllib import request as requests
+from urllib.parse import urlparse
+from flask import send_file
+import urllib
 
 class NoteService:
 
@@ -43,3 +50,38 @@ class NoteService:
         db.session.commit()
         return True
             
+    @staticmethod
+    def export_note(note_id):
+        note = Note.query.get_or_404(note_id)
+
+        file_name = os.urandom(16).hex() + '.txt'
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'uploads' , file_name)
+    
+        # Save the note content to the file
+        try:
+            with open(file_path, 'w') as file:
+                file.write(note.__repr__())
+
+            return file_name
+        except Exception:
+            return None
+        
+    @staticmethod
+    def to_pdf(url):
+        if not url:
+            raise InvalidInput('URL is required.', 400)
+        try:
+            parsed_url = urlparse(url)
+            response = requests.urlopen(parsed_url.geturl())
+        except Exception as e:
+            raise InvalidInput('Failed to fetch note.', 500)
+        
+        content = response.read()
+
+        pdf_buffer = io.BytesIO()
+        pisa_status = pisa.CreatePDF(content, dest=pdf_buffer) # generate PDF 
+        if pisa_status.err:
+            return "Error in PDF generation", 500
+        
+        pdf_buffer.seek(0)
+        return send_file(pdf_buffer, as_attachment=False, download_name='note.pdf', mimetype='application/pdf')

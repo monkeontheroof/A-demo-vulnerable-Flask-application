@@ -25,12 +25,17 @@
           <td>
             <!-- Edit Button with Icon -->
             <button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='/note/' + {{ note.id }}">
-              <i class="fas fa-edit"></i>
+              <i class="fas fa-edit"></i> Edit
+            </button>
+
+            <!-- Save Button with Icon-->
+            <button type="button" class="btn btn-success btn-sm" onClick="save_note({{ note.id }})">
+              <i class="fas fa-save"></i> Save to PDF
             </button>
             
             <!-- Delete Button with Icon -->
             <button type="button" class="btn btn-danger btn-sm" onClick="deleteNote({{ note.id }})">
-              <i class="fas fa-trash-alt"></i>
+              <i class="fas fa-trash-alt"></i> Delete
             </button>
           </td>
         </tr>
@@ -45,4 +50,14 @@
         <button type="submit" class="btn btn-success">Add Note</button>
       </div>
     </form>
+
+    <script>
+      function save_note(note_id) {
+        const response = fetch('/save-note/' + note_id , {
+          method: 'POST'
+        }).then(x => {
+          window.location.href = x.url
+        });
+      }
+    </script>
     {% endblock %}

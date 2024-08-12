@@ -9,6 +9,9 @@ class Note(db.Model):
     date = db.Column(db.DateTime(150), default=func.now())
     user_id = db.Column(db.ForeignKey('user.id'))
 
+    def __repr__(self):
+        return f"Note('id': '{self.id}', 'user_id': '{self.user_id}' , 'date': '{self.date}, 'data': '{self.data}')"
+
 class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)

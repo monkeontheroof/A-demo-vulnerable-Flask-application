@@ -5,3 +5,5 @@ flask-sqlalchemy
 pymysql
 flask-bcrypt
 cryptography
+requests
+xhtml2pdf
