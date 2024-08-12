@@ -15,7 +15,7 @@ def login():
         user = UserService.authenticate(email, password)
         if user:
             flash('Logged in successfully!', category='success')
-            login_user(user, remember=True)
+            login_user(user)
             return redirect(url_for('views.home'))
         else:
             flash('Incorrect email or password.', category='error')

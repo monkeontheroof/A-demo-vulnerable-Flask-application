@@ -1,19 +1,18 @@
-from flask import Blueprint, jsonify, render_template, request, render_template_string, flash
+from flask import Blueprint, jsonify, redirect, render_template, request, render_template_string, flash
 from flask_login import login_required, current_user
-from markupsafe import Markup
 from website.services.note_service import NoteService
-from website.errors import InvalidInput
+from flask import url_for
 
-views = Blueprint('views', __name__)
+note = Blueprint('notes', __name__)
 
-@views.route('/')
+@note.route('/')
 @login_required
 def home():
     # message = request.args.get('message', 'Welcome back!')
     
     return render_template("home.html", user=current_user)
 
-@views.route('/note', methods=['GET', 'POST'])
+@note.route('/note', methods=['GET', 'POST'])
 @login_required
 def my_note():
     if request.method == 'POST':
@@ -25,17 +24,20 @@ def my_note():
             try:
                 NoteService.add_note(data=note, user_id=current_user.id)
                 flash('Note added!', category='success')
-            except Exception as e:
-                raise InvalidInput('Failed')
+            except Exception:
+                flash('Failed.', category='error')
 
-    message = Markup(f'{current_user.first_name}\'s Notes')
+    message = f'{current_user.first_name}\'s Notes'
 
     return render_template("note.html", user=current_user, message=message)
 
-@views.route('/note/<note_id>', methods=['GET', 'POST'])
+@note.route('/note/<note_id>', methods=['GET', 'POST'])
 @login_required
-def note(note_id):
+def notes(note_id):
     note = NoteService.get_note_by_id(note_id)
+    
+    if not note or note.user_id != current_user.id:
+        return redirect(url_for('notes.my_note'))
 
     if request.method == 'POST':
         data = request.get_json()
@@ -46,7 +48,7 @@ def note(note_id):
     
     return render_template("edit_note.html", user=current_user, note=note)
 
-@views.route('/delete-note/<int:note_id>', methods=['POST'])
+@note.route('/delete-note/<int:note_id>', methods=['POST'])
 def delete_note(note_id):
     NoteService.delete_note(note_id, current_user.id)
     return jsonify({})

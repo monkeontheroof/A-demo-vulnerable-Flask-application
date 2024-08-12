@@ -2,7 +2,7 @@
 {% block content%}
   <p>Welcome back!!</p>
 
-{% if user.is_authenticated and 'admin@gmail.com' in user.email %}
-FLAG{FAKE_FLAG_FOR_TESTING}
+{% if user.is_authenticated and user.email == 'admin@gmail.com' %}
+FLAG{AdMIN_Is_T00_e2_7o_yoU?}
 {% endif %}
 {% endblock content%}
