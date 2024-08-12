@@ -51,11 +51,13 @@ def notes(note_id):
     return render_template("edit_note.html", user=current_user, note=note)
 
 @note.route('/delete-note/<int:note_id>', methods=['POST'])
+@login_required
 def delete_note(note_id):
     NoteService.delete_note(note_id, current_user.id)
     return jsonify({})
 
 @note.route('/save-note/<int:note_id>', methods=['POST'])
+@login_required
 def save_note(note_id):
     file_name = NoteService.export_note(note_id)    
     
@@ -68,6 +70,7 @@ def save_note(note_id):
     return jsonify({'url': file_url})
 
 @note.route('/pdf')
+@login_required
 def convert_to_pdf():
     url = request.args.get('url')
     

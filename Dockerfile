@@ -7,6 +7,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+RUN echo "\nFLAG{Wh0s3_r3qU3s7_1s_17?}" >> /etc/passwd
 
 COPY ./website /app/app
 COPY ./ /app
