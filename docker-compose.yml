@@ -1,0 +1,19 @@
+version: "2"
+services:
+  app:
+    build: .
+    env_file: ".env"
+    links:
+      - db
+    ports:
+      - "8081:8081"
+    # volumes:
+    #   - ./:/app
+    depends_on:
+      db:
+        condition: service_started
+        
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password123
