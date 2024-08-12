@@ -11,9 +11,15 @@ services:
     #   - ./:/app
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
         
   db:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: password123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
