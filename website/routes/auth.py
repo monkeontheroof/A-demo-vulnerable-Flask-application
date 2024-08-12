@@ -16,7 +16,7 @@ def login():
         if user:
             flash('Logged in successfully!', category='success')
             login_user(user)
-            return redirect(url_for('views.home'))
+            return redirect(url_for('notes.home'))
         else:
             flash('Incorrect email or password.', category='error')
     
@@ -52,7 +52,7 @@ def sign_up():
                 user = UserService.add_user(email, password1, firstName)
                 flash('Account created!', category='success')
                 login_user(user)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('notes.home'))
             except ValueError as e:
                 flash(str(e), category='error')
             
