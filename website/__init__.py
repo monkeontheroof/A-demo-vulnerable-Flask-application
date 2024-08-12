@@ -11,7 +11,7 @@ from .errors import InvalidInput
 mysql = SQLAlchemy()
 bcrypt = Bcrypt()
 
-def create_app(test_config=None):
+def create_app():
     # create and configure the app
     app = Flask(__name__)
     

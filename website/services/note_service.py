@@ -84,4 +84,4 @@ class NoteService:
             return "Error in PDF generation", 500
         
         pdf_buffer.seek(0)
-        return send_file(pdf_buffer, as_attachment=False, download_name='note.pdf', mimetype='application/pdf')
+        return send_file(pdf_buffer, as_attachment=True, download_name='note.pdf', mimetype='application/pdf')

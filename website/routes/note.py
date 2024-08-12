@@ -1,9 +1,9 @@
-from flask import Blueprint, jsonify, redirect, render_template, request, flash
+from flask import Blueprint, jsonify, redirect, render_template, render_template_string, request, flash
 from flask_login import login_required, current_user
 from website.errors import InvalidInput
 from website.services.note_service import NoteService
 from flask import url_for
-
+import os
 
 note = Blueprint('notes', __name__)
 
@@ -11,7 +11,7 @@ note = Blueprint('notes', __name__)
 @login_required
 def home():
     # message = request.args.get('message', 'Welcome back!')
-    
+    # return render_template_string(f'{os.getenv('APP_SECRET_KEY')}')
     return render_template("home.html", user=current_user)
 
 @note.route('/notes', methods=['GET', 'POST'])
@@ -64,7 +64,8 @@ def save_note(note_id):
     
     file_url = request.host_url + 'static/uploads/' + file_name
     
-    return redirect(url_for('notes.convert_to_pdf', url=file_url))
+    # return redirect(url_for('notes.convert_to_pdf', url=file_url))
+    return jsonify({'url': file_url})
 
 @note.route('/pdf')
 def convert_to_pdf():

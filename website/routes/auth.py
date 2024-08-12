@@ -7,17 +7,17 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('notes.home'))
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
         
         user = UserService.authenticate(email, password)
         if user:
-            flash('Logged in successfully!', category='success')
-            login_user(user)
             return redirect(url_for('notes.home'))
-        else:
-            flash('Incorrect email or password.', category='error')
+
+        flash('Incorrect email or password.', category='error')
     
     return render_template("login.html", user=current_user)
 
@@ -29,31 +29,18 @@ def logout():
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
-
+    if current_user.is_authenticated:
+        return redirect(url_for('notes.home'))
     if request.method == 'POST':
         data = request.form
 
         email = data.get('email')
-        firstName = data.get('firstName')
+        first_name = data.get('firstName')
         password1 = data.get('password1')
         password2 = data.get('password2')
 
-        if len(email) < 4:
-            flash('Email must be greater than 4 characters', category='error')
-        elif len(firstName) < 2:
-            flash('First name must be greater than 1 character.', category='error')
-        elif password1 != password2:
-            flash('Password do not matcch.', category='error')
-        elif len(password1) < 7:
-            flash('Password must be at least 7 characters.', category='error')
-        else:
-            try:
-                user = UserService.add_user(email, password1, firstName)
-                flash('Account created!', category='success')
-                login_user(user)
-                return redirect(url_for('notes.home'))
-            except ValueError as e:
-                flash(str(e), category='error')
+        UserService.add_user(email, password1, password2, first_name)
+        return redirect(url_for('notes.home'))
             
     return render_template("signup.html", user=current_user)
 

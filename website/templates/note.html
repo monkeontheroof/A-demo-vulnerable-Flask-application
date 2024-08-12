@@ -55,8 +55,9 @@
       function save_note(note_id) {
         const response = fetch('/save-note/' + note_id , {
           method: 'POST'
-        }).then(x => {
-          window.location.href = x.url
+        }).then((response) => response.json())
+        .then((data) => {
+          window.location.href = '/pdf?url=' + data.url
         });
       }
     </script>
