@@ -1,0 +1,25 @@
+version: "2"
+services:
+  app:
+    build: .
+    env_file: ".env"
+    links:
+      - db
+    ports:
+      - "8081:8081"
+    # volumes:
+    #   - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+        
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s

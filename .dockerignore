@@ -2,3 +2,6 @@
 .env
 Dockerfile
 *.yml
+.gitignore
+.dockerignore
+.git
