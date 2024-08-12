@@ -12,7 +12,7 @@ def home():
     
     return render_template("home.html", user=current_user)
 
-@note.route('/note', methods=['GET', 'POST'])
+@note.route('/notes', methods=['GET', 'POST'])
 @login_required
 def my_note():
     if request.method == 'POST':
