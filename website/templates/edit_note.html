@@ -4,12 +4,12 @@
     <h2>Edit Note</h2>
     <form id="editNoteForm">
       <div class="mb-3">
-        <label for="data" class="form-label"><b>Date:</b></label>
-        <p>{{ note.date | safe }}</p>
-        <input type="hidden" class="form-control" id="date" name="date" value="{{ note.date }}" readonly>
+        <!-- <label for="data" class="form-label"><b>Date:</b></label> -->
+        <p>{{ note.date }}</p>
+        <!-- <input type="date" class="form-control" id="date" name="date" value="{{ note.date }}" readonly> -->
       </div>
       <div class="mb-3">
-        <label for="noteData" class="form-label"><b>Note content:</b></label>
+        <label for="noteData" class="form-label"><b>Content:</b></label>
         <textarea class="form-control" id="data" name="data" rows="5" required>{{ note.data }}</textarea>
       </div>
       <div class="mb-3">
@@ -17,7 +17,7 @@
         <input type="number" class="form-control" id="userId" name="userId" value="{{ note.user_id }}" readonly/>
       </div>
       <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i> Save Changes</button>
-      <a href="/note" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+      <a href="/notes" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
     </form>
 </div>
 
@@ -25,7 +25,7 @@
     function submitForm() {      
       // Collect the form data
       const formData = {
-        date: document.getElementById('date').value,
+        // date: document.getElementById('date').value,
         data: document.getElementById('data').value
       };
 

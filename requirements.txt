@@ -1,7 +1,9 @@
 Flask
-flask-mysqldb
 flask_login
 flask-sqlalchemy
 pymysql
 flask-bcrypt
 cryptography
+requests
+xhtml2pdf
+python-dotenv

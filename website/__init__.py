@@ -11,7 +11,7 @@ from .errors import InvalidInput
 mysql = SQLAlchemy()
 bcrypt = Bcrypt()
 
-def create_app(test_config=None):
+def create_app():
     # create and configure the app
     app = Flask(__name__)
     
@@ -22,13 +22,13 @@ def create_app(test_config=None):
     mysql.init_app(app)
     bcrypt.init_app(app)
     
-    from .routes.views import views
+    from .routes.note import note
     from .routes.auth import auth
 
-    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(note, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import User, Note
+    from .models import User, Note, Flag
     
     create_database()
     
@@ -54,9 +54,11 @@ def create_app(test_config=None):
         mysql.create_all()
 
         admin = User(email="admin@gmail.com", password="$2a$10$YVxRbvILas.DQFjLs0A12ui0xXkQhzvg6fxXwWTAHZLkoYV.4deLq", first_name="administrator")
+        flag = Flag(flag="FLAG{sQL_INj3c7!0n_m@ST3R}")
         admin_note = Note(data="How did you find my note?", date=datetime.now(), user_id=1)
 
         mysql.session.add(admin)
+        mysql.session.add(flag)
         mysql.session.add(admin_note)
         mysql.session.commit()
     
