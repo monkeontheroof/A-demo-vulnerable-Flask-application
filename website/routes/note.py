@@ -3,7 +3,6 @@ from flask_login import login_required, current_user
 from website.errors import InvalidInput
 from website.services.note_service import NoteService
 from flask import url_for
-import os
 
 note = Blueprint('notes', __name__)
 
