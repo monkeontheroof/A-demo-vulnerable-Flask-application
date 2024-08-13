@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, redirect, render_template, render_template_string, request, flash
 from flask_login import login_required, current_user
+from markupsafe import Markup
 from website.errors import InvalidInput
 from website.services.note_service import NoteService
 from flask import url_for
@@ -28,7 +29,7 @@ def my_note():
             except Exception:
                 flash('Failed.', category='error')
 
-    message = f'{current_user.first_name}\'s Notes'
+    message = Markup(f'{current_user.first_name}\'s Notes')
 
     return render_template("note.html", user=current_user, message=message)
 
