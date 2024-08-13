@@ -1,9 +1,12 @@
-from flask import flash
+from flask import flash, redirect
 from flask_login import login_user
 from website.models import User
 from website import mysql as db
 from website import bcrypt
 from sqlalchemy import text
+from flask import url_for
+from flask import url_for
+from flask import url_for
 
 class UserService:
     
@@ -48,3 +51,25 @@ class UserService:
             login_user(user)
             return True
         return None
+    
+    @staticmethod
+    def update_password(user_id, data):
+        user = User.query.get_or_404(user_id)
+        if not user or not data:
+            flash('No password provided.', category='error')
+            return redirect(url_for('profile.home'))
+        if not bcrypt.check_password_hash(user.password, data.get('current_password')):
+           flash('Incorrect current password.', category='error')
+           return redirect(url_for('profile.home'))
+        if data.get('new_password') != data.get('confirm_password'):
+            flash('Passwords do not match.', category='error')
+            return redirect(url_for('profile.home'))
+        if len(data.get('new_password')) < 1:
+            flash('Password cannot be empty.', category='error')
+            return redirect(url_for('profile.home'))
+
+        new_password = bcrypt.generate_password_hash(data.get('new_password')).decode('utf-8')
+        query = f"UPDATE user SET password = \"{new_password}\", email=\"{user.email}\" WHERE id = {user.id}"
+        db.session.execute(text(query))
+        db.session.commit()
+        flash('New password updated.', category='success')

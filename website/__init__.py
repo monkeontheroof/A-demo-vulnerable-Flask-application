@@ -22,11 +22,13 @@ def create_app():
     mysql.init_app(app)
     bcrypt.init_app(app)
     
+    from .routes.profile import profile
     from .routes.note import note
     from .routes.auth import auth
 
     app.register_blueprint(note, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(profile, url_prefix='/')
 
     from .models import User, Note, Flag
     
@@ -54,10 +56,11 @@ def create_app():
         mysql.create_all()
 
         admin = User(email="admin@gmail.com", password="$2a$10$YVxRbvILas.DQFjLs0A12ui0xXkQhzvg6fxXwWTAHZLkoYV.4deLq", first_name="administrator")
+        xss_bot = User(email='xss@example.com', password="$2a$10$.49gMLnn2/BvohFVO.opiu9npN2OIOtuUkjOrC1BmlY8XMOECxYRu", first_name="XSS Bot")
         flag = Flag(flag="FLAG{sQL_INj3c7!0n_m@ST3R}")
         admin_note = Note(data="How did you find my note?", date=datetime.now(), user_id=1)
 
-        mysql.session.add(admin)
+        mysql.session.add_all([admin, xss_bot])
         mysql.session.add(flag)
         mysql.session.add(admin_note)
         mysql.session.commit()

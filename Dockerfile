@@ -9,7 +9,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y cron
+    apt-get install -y cron supervisor
 RUN echo "FLAG{Wh0s3_r3qU3s7_1s_17?}" >> /etc/passwd
 
 COPY ./ /app
@@ -18,10 +18,18 @@ EXPOSE 8081
 
 RUN mkdir /etc/cron.custom
 RUN echo "*/5 * * * * root rm -rf /app/app/static/uploads/*" > /etc/cron.custom/cleanup-cron
-RUN echo "* * * * * root cd / && run-parts --report /etc/cron.custom" | tee -a /etc/crontab
-# Give execution rights on the cron job
-RUN chmod +x /etc/cron.custom/cleanup-cron
-RUN crontab /etc/cron.custom/cleanup-cron
-RUN crontab /etc/crontab
+# RUN echo "* * * * * root cd / && run-parts --report /etc/cron.custom" | tee -a /etc/crontab
+RUN echo "SHELL=/bin/sh" >> /etc/crontab
+RUN echo "*/5 * * * * root run-parts /etc/cron.custom" >> /etc/crontab
 
-CMD ["sh", "-c", "cron && python main.py"]
+# Give execution rights on the cron job
+# RUN chmod +x /etc/cron.custom/cleanup-cron
+# RUN crontab /etc/cron.custom/cleanup-cron
+# RUN crontab /etc/crontab
+
+# CMD ["sh", "-c", "cron && python main.py"]
+# Copy Supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Start Supervisor
+CMD ["/usr/bin/supervisord"]
