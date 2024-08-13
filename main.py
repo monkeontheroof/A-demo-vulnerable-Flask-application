@@ -1,7 +1,5 @@
 from website import create_app
-from dotenv import load_dotenv
 
-load_dotenv()
 # website package
 app = create_app()
 
