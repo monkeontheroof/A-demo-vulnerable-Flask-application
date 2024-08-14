@@ -2,13 +2,16 @@ import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 def create_driver():
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")
-    return webdriver.Chrome(options=chrome_options)
+    chrome_options.add_argument("--no-sandbox")
+    service = Service('/usr/local/bin/chromedriver') 
+    return webdriver.Chrome(service=service, options=chrome_options)
 
 def visit_notes(driver):
     try:
