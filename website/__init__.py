@@ -10,6 +10,7 @@ from .errors import InvalidInput
 
 mysql = SQLAlchemy()
 bcrypt = Bcrypt()
+login_manager = LoginManager()
 
 def create_app():
     # create and configure the app
@@ -18,6 +19,8 @@ def create_app():
     app.config.from_object(Config) # from config.py
 
     app.config['SQLALCHEMY_DATABASE_URI'] += Config.MYSQL_DATABASE + '?charset=utf8mb4'
+    # app.config['SESSION_COOKIE_HTTPONLY'] = False
+    # app.config['SESSION_COOKIE_SECURE'] = False
     
     mysql.init_app(app)
     bcrypt.init_app(app)
@@ -35,9 +38,8 @@ def create_app():
     create_database()
     
     # configure the login manager
-    login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
-    login_manager.session_protection = None
+    login_manager.session_protection = 'basic'
     login_manager.init_app(app)
 
     @login_manager.user_loader
