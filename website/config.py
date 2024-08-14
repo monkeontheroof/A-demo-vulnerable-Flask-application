@@ -14,8 +14,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SECRET_KEY = os.getenv('APP_SECRET_KEY')
-    SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False')
-    SESSION_COOKIE_HTTPONLY = os.getenv('SESSION_COOKIE_HTTPONLY', 'False')
+    SESSION_COOKIE_SECURE = os.getenv('COOKIE_SECURE', 'False').lower() in ['true', '1', 't']
+    SESSION_COOKIE_HTTPONLY = os.getenv('COOKIE_HTTPONLY', 'False').lower() in ['true', '1', 't']
+    # SESSION_COOKIE_SAMESITE = os.getenv('COOKIE_SAMESITE', 'Lax')
 
     UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'uploads')
     print(UPLOAD_FOLDER)

@@ -1,42 +1,57 @@
 import time
-import requests
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
-# Create a Session object to handle cookies
-session = requests.Session()
+def create_driver():
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    service = Service('/usr/local/bin/chromedriver') 
+    return webdriver.Chrome(service=service, options=chrome_options)
 
-# Login credentials
-login_data = {
-    'email': 'xss@example.com',
-    'password': 'NoWayYouCanStealMyCookies!'
-}
-
-cookies = {
-    'Flag': "FLAG{s7Or3d_XsS_9On3_CR42YYy!}"
-}
-
-def login():
-    login_url = 'http://localhost:8081/login'
-    response = session.post(login_url, data=login_data)
-    if not 'incorrect' in str(response.content.lower()):
-        session.cookies.update(response.cookies)
-        session.cookies.update(cookies)
-        print("Logged in successfully.")
-    else:
-        print(f"Failed to log in: {response.status_code}")
-
-def visit_notes():
+def visit_notes(driver):
     try:
-        response = session.get('http://localhost:8081/notes')
-        print(f"Visited /notes, status code: {response.status_code}")
-        # Print the cookies to verify they are being handled
-        print(f"Cookies after request: {session.cookies.get_dict()}")
-    except requests.exceptions.RequestException as e:
-        print(f"Error visiting /notes: {e}")
+        # Log in
+        if not driver.current_url.endswith('/login'):
+            driver.get('http://localhost:8081/login')
 
-# Log in before starting the loop
-login()
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, 'email'))
+            )
+            
+            driver.find_element(By.NAME ,'email').send_keys('xss@example.com')
+            driver.find_element(By.NAME, 'password').send_keys('NoWayYouCanStealMyCookies!')
+            driver.find_element(By.NAME, 'login').click()
+        print("Logged in.")
 
-while True:
-    visit_notes()
-    # Wait for 5 minutes
-    time.sleep(120)
+        driver.add_cookie({
+            'name': 'Flag', 
+            'value': "FLAG{s7Or3d_XsS_9On3_CR42YYy!}"
+        })
+
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME, 'body'))
+        )
+
+        # Visit the page with XSS
+        driver.get('http://localhost:8081/notes')
+        print("Visting..")
+        # Print page content or check for expected changes
+        # print(driver.page_source)  # This is useful for debugging
+        # driver.close()
+        driver.quit()
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+# Start the scheduling task
+if __name__ == "__main__":
+
+    while True:
+        driver = create_driver()
+        visit_notes(driver)
+        time.sleep(180) # Wait for 3 minutes before sending next request

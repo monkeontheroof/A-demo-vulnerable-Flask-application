@@ -48,9 +48,8 @@ class UserService:
         user = UserService.get_user_by_email(email)
         if user and bcrypt.check_password_hash(user.password, password):
             flash('Logged in successfully!', category='success')
-            login_user(user)
-            return True
-        return None
+            return login_user(user)
+        return False
     
     @staticmethod
     def update_password(user_id, data):
