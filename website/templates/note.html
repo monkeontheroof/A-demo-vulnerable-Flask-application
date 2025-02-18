@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block title %} 
+{% if user.is_authenticated %} {{ message }} {% endif %} 
+{% endblock %}
+                                                                          
+{% block content%}
+    <h1 align="center">My Notes</h1>
+    
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Content</th>
+          <th scope="col">Date</th>
+          <th scope="col">User ID</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for note in user.notes %}
+        <tr id="note-{{ note.id }}">
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ note.data }}</td>
+          <td>{{ note.date }}</td>
+          <td>{{ note.user_id }}</td>
+          <td>
+            <!-- Edit Button with Icon -->
+            <button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='/note/' + {{ note.id }}">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+
+            <!-- Save Button with Icon-->
+            <button type="button" class="btn btn-success btn-sm" onClick="save_note({{ note.id }})">
+              <i class="fas fa-save"></i> Save to PDF
+            </button>
+            
+            <!-- Delete Button with Icon -->
+            <button type="button" class="btn btn-danger btn-sm" onClick="deleteNote({{ note.id }})">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>    
+    
+    <form method="POST">
+      <textarea name="note" id="note" class="form-control"></textarea>
+      <br />
+      <div align="center">
+        <button type="submit" class="btn btn-success">Add Note</button>
+      </div>
+    </form>
+
+    <script>
+      function save_note(note_id) {
+        const response = fetch('/save-note/' + note_id , {
+          method: 'POST'
+        }).then((response) => response.json())
+        .then((data) => {
+          window.location.href = '/pdf?url=' + data.url
+        });
+      }
+    </script>
+    {% endblock %}

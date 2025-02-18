@@ -1,0 +1,8 @@
+{% extends "base.html" %} {% block title %}Home{% endblock title %} 
+{% block content%}
+  <p>Welcome back!!</p>
+
+{% if user.is_authenticated and user.email == 'admin@gmail.com' %}
+FLAG{AdMIN_Is_T00_e2_7o_yoU?}
+{% endif %}
+{% endblock content%}
