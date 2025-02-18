@@ -38,7 +38,7 @@ pip install -r requirements.txt
 ```
 
 - Linux:
-```bash
+```sh
 .venv/Scripts/activate
 ```
 
