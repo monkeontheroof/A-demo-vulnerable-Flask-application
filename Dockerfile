@@ -26,7 +26,7 @@ RUN echo "FLAG{Wh0s3_r3qU3s7_1s_17?}" >> /etc/passwd
 
 COPY ./ /app
 
-EXPOSE 8081
+EXPOSE 80
 
 # Cronjob configuration
 RUN mkdir /etc/cron.custom

@@ -7,7 +7,7 @@ from flask import url_for
 
 note = Blueprint('notes', __name__)
 
-@note.route('/')
+@note.route('/home')
 @login_required
 def home():
     # message = request.args.get('message', 'Welcome back!')

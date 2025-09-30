@@ -25,13 +25,16 @@ def create_app():
     mysql.init_app(app)
     bcrypt.init_app(app)
     
+    # expose routes
     from .routes.profile import profile
     from .routes.note import note
     from .routes.auth import auth
+    from .routes.test import test
 
     app.register_blueprint(note, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(profile, url_prefix='/')
+    app.register_blueprint(test, url_prefix='/')
 
     from .models import User, Note, Flag
     
